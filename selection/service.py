@@ -41,7 +41,7 @@ def handler(event, context):
     except ClientError as e:
         print(e.response['Error']['Message'])
     else:
-        if response['Item'].has_key('selection'): ## This means that the customer has selected the type of pizaa, the size option must be provided
+        if response['Item'].has_key('selection'): ## This means that the customer has selected the type of pizza, the size option must be provided
            size = get_from_menu("size",int(event['input']))
            t1 = dynamodb.Table('menu')
            try:
@@ -59,10 +59,11 @@ def handler(event, context):
                     Key = {
                         'orderId': event['orderId'] 
                         },
-                    UpdateExpression="set size = :r1, price = :r2",
+                    UpdateExpression="set size = :r1, price = :r2, orderStatus= :r3",
                     ExpressionAttributeValues={
                         ':r1': size ,
-                        ':r2': price
+                        ':r2': price,
+                        ':r3': 'processing'
                         }
                     )
                 msg = "Your order costs ${}. We will email you when the order is ready. Thank you! " .format(price)
@@ -72,6 +73,7 @@ def handler(event, context):
                 }
         else: ## provide the sellection option
             sel = get_from_menu("selection",int(event['input']))
+            print sel
             r = table.update_item(
                 Key = {
                     'orderId': event['orderId'] 

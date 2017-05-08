@@ -2,7 +2,7 @@ region: us-west-2
 
 function_name: pizzaorder_lambda_function
 handler: service.handler
-##role: abn
+#role: 
 description: Lambda function to handle Pizza orders
 
 # if access key and secret are left blank, boto will use the credentials

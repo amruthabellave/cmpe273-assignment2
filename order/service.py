@@ -4,6 +4,7 @@ import json
 import decimal
 from boto3.dynamodb.conditions import Key, Attr
 from botocore.exceptions import ClientError
+import datetime
 
 
 
@@ -13,12 +14,16 @@ def handler(event, context):
     dynamodb = boto3.resource("dynamodb", region_name='us-west-2')
 
     table = dynamodb.Table('order')
+    now = datetime.datetime.now()
+    timestamp = "{}-{}-{}@{}:{}:{}".format(now.month,now.day,now.year,now.hour,now.minute,now.second)
     try:
         response = table.put_item(
             Item= {
                 'orderId': event['order_id'],
                 'customerName': event['customer_name'],
-                'customerEmail': event['customer_email']
+                'customerEmail': event['customer_email'],
+                'time': timestamp,
+                'menuId' : 'pi12'
             }
     )
     except ClientError as e:
